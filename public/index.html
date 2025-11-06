@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stock App Test</title>
+</head>
+<body style="font-family: Arial;">
+
+  <h1>📈 Stock App</h1>
+
+  <button onclick="loadStocks()">Load Stocks</button>
+
+  <ul id="stockList"></ul>
+
+  <h2>Add New Stock</h2>
+  <input id="name" placeholder="Stock Name">
+  <input id="price" placeholder="Stock Price" type="number">
+  <button onclick="addStock()">Add</button>
+
+  <script>
+    function loadStocks() {
+      fetch("/api/stocks")
+        .then(res => res.json())
+        .then(data => {
+          let ul = document.getElementById("stockList");
+          ul.innerHTML = "";
+          data.forEach(stock => {
+            ul.innerHTML += `<li>${stock.name} - $${stock.price}</li>`;
+          });
+        });
+    }
+
+    function addStock() {
+      let name = document.getElementById("name").value;
+      let price = document.getElementById("price").value;
+
+      fetch("/api/stocks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, price })
+      })
+      .then(res => res.json())
+      .then(msg => {
+        alert("Stock added!");
+        loadStocks();
+      });
+    }
+  </script>
+
+</body>
+</html>
