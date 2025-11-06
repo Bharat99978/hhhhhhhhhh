@@ -1,7 +1,14 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const PORT = 3000;
+
+// ✅ Use dynamic PORT for cloud deployment (fallback to 3000 for local)
+const PORT = process.env.PORT || 3000;
+
+// ✅ Bind to '0.0.0.0' for external access in cloud (not just localhost)
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Server running on http://${process.env.HOST || '0.0.0.0'}:${PORT}`);
+});
 
 app.use(cors());
 app.use(express.json());
@@ -28,8 +35,4 @@ app.post("/api/stocks", (req, res) => {
   };
   stockData.push(newStock);
   res.json({ message: "Stock added", data: newStock });
-});
-
-app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
 });
